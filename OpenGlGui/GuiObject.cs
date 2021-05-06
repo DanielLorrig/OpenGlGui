@@ -1,27 +1,40 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices;
 
 namespace OpenGlGui
 {
-    public abstract class GuiObject
+    public class GuiObject
     {
+        //protected float[] _vertices;
+        protected DisplaySettings _displaySettings;
+        protected ElementAnchors _anchor;
         public Vector2i Size { get; protected set; }
-
-        ///Refers to top left position of the bounding box
         public Vector2i Position { get; protected set; }
         public Texture Texture { get; private set; }
+        private readonly GuiObjectShader _shader;
+        public int Id { get; protected set; }
+        public string Text { get; private set; }
 
-        public GuiObject(Vector2i size, Vector2i position)
+        public float IsClicked { get; set; } = 0;
+
+        public GuiObject(Vector2i size, Vector2i position, GuiObjectShader shader, DisplaySettings displaySettings, ElementAnchors elementAnchor = ElementAnchors.TopRight)
         {
+            _shader = shader;
             Position = position;
             Size = size;
+            _displaySettings = displaySettings;
+            _anchor = elementAnchor;
         }
-        public int Id { get; protected set; }
 
+        public void SetText(string text)
+        {
+            Text = text;
+            var bitmap = CreateBitmapImage(text);
+            bitmap.Save("test.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+            Texture = Texture.LoadFromImage(bitmap);
+        }
         protected Bitmap CreateBitmapImage(string sImageText)
         {
             Bitmap objBmpImage = new Bitmap(Size.X, Size.Y);
@@ -58,172 +71,86 @@ namespace OpenGlGui
         }
 
         public List<GuiObject> Children { get; private set; } = new List<GuiObject>();
-    }
 
-    public class GuiObjectShader : Shader
-    {
-        protected float[] _vertices;
-        protected int _vertexBuffer;
-        protected int _vertexArray;
 
-        protected DisplaySettings _displaySettings;
-        protected ElementAnchors _anchor;
-        //public Vector2i Size { get; protected set; }
-        //public Vector2i Position { get; protected set; } = new Vector2i(50, 50);
-
-        //public Texture _texture;
-
-        public GuiObjectShader(string vertexPath, string fragmentPath, DisplaySettings displaySettings, ElementAnchors ElementAnchor = ElementAnchors.TopRight) : base(vertexPath, fragmentPath)
+        public Vector2 GetiResolution()
         {
-            _displaySettings = displaySettings;
-            _anchor = ElementAnchor;
-
-            CreateVertices();
-            CreateVertexBuffer();
-            CreateVertexArray();
-
-            //var bitmap = CreateBitmapImage("12.34");
-            //bitmap.Save("test.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
-            //_texture = Texture.LoadFromImage(bitmap);
-            Use();
+            return new Vector2(_displaySettings.Width, _displaySettings.Height);
         }
-
-
-        protected void CreateVertices()
+        public Vector2 GetSize()
         {
-            float[] vertices =
-            {
-                -Size.X/2, Size.Y/2, 0f,
-                -Size.X/2, -Size.Y/2, 0f,
-                Size.X/2, Size.Y/2, 0f,
-
-                -Size.X/2, -Size.Y/2, 0f,
-                Size.X/2, Size.Y/2, 0f,
-                Size.X/2, -Size.Y/2, 0f,
-               //-.5f, .50f, 0.0f,
-               // -.5f, -.50f, 0.0f,
-               // .50f, .50f, 0.0f,
-               // -.50f, -.50f, 0.0f,
-               // .50f, -.50f, 0.0f,
-               // .50f, .50f, 0.0f
-            };
-            _vertices = vertices;
+            return new Vector2(Size.X, Size.Y);
         }
-
-        public void GlobalToLocalCoordinates()
-        {
-
-        }
-
-        private void CreateVertexBuffer()
-        {
-            GL.CreateBuffers(1, out _vertexBuffer);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
-
-            var handle = GCHandle.Alloc(_vertices, GCHandleType.Pinned);
-            try
-            {
-                GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(_vertices.Length*sizeof(float)), handle.AddrOfPinnedObject(),
-                    BufferUsageHint.StaticDraw);
-            }
-            finally
-            {
-                handle.Free();
-            }
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
-        }
-
-        private void CreateVertexArray()
-        {
-            GL.CreateVertexArrays(1, out _vertexArray);
-            GL.BindVertexArray(_vertexArray);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-        }
-
-        public override void Use(double? iTime = null, int index = 0)
-        {
-            _texture.Use(TextureUnit.Texture0);
-
-            GL.UseProgram(handle);
-            GL.BindVertexArray(_vertexArray);
-            Console.WriteLine(GL.GetError().ToString());
-
-            int location = GL.GetUniformLocation(handle, "iResolution");
-            GL.Uniform2(location, (float)_displaySettings.Width, (float)_displaySettings.Height);
-
-
-
-            
-            var transpose = GL.GetUniformLocation(handle, "transpose");
-            GL.Uniform2(transpose, GetTransposeVector());
-
-            var sizeLocation = GL.GetUniformLocation(handle, "size");
-            GL.Uniform2(sizeLocation, Size.X/2f, Size.Y/2f);
-
-            
-
-            //GL.UniformMatrix4(1, false, ref scale);
-            Console.WriteLine(GL.GetError().ToString());
-            
-        }
-
-        public void Render(GuiObject guiObject)
-        {
-
-        }
-        public void UseAgain()
-        {
-            _texture.Use(TextureUnit.Texture0);
-
-            GL.UseProgram(handle);
-            GL.BindVertexArray(_vertexArray);
-            Console.WriteLine(GL.GetError().ToString());
-
-            int location = GL.GetUniformLocation(handle, "iResolution");
-            GL.Uniform2(location, _displaySettings.Width / 2f, _displaySettings.Height / 2f);
-
-
-
-
-            var transpose = GL.GetUniformLocation(handle, "transpose");
-            GL.Uniform2(transpose, new Vector2((float)Position.X - _displaySettings.Width / 2f, (float)Position.Y+50 - _displaySettings.Height / 2f));
-
-            var sizeLocation = GL.GetUniformLocation(handle, "size");
-            GL.Uniform2(sizeLocation, Size.X / 2f, Size.Y / 2f);
-
-
-
-            //GL.UniformMatrix4(1, false, ref scale);
-            Console.WriteLine(GL.GetError().ToString());
-
-        }
-        private Vector2 GetTransposeVector()
+        public Vector2 GetTransposeVector()
         {
             Vector2 transposeVector = new Vector2();
 
             switch (_anchor)
             {
                 case ElementAnchors.BottomLeft:
-                    transposeVector = new Vector2((float)Position.X - _displaySettings.Width / 2f, (float)Position.Y - _displaySettings.Height / 2f);
+                    transposeVector = new Vector2((float)Position.X - _displaySettings.Width / 2f + (float)Size.X / 2f, (float)Position.Y - _displaySettings.Height / 2f + (float)Size.Y / 2f);
                     break;
                 case ElementAnchors.TopLeft:
-                    transposeVector = new Vector2((float)Position.X - _displaySettings.Width / 2f, -(float)Position.Y + _displaySettings.Height / 2f);
+                    transposeVector = new Vector2((float)Position.X - _displaySettings.Width / 2f + (float)Size.X / 2f, -(float)Position.Y + _displaySettings.Height / 2f - (float)Size.Y / 2f);
                     break;
                 case ElementAnchors.TopRight:
-                    transposeVector = new Vector2(-(float)Position.X + _displaySettings.Width / 2f, -(float)Position.Y + _displaySettings.Height / 2f);
+                    transposeVector = new Vector2(-(float)Position.X + _displaySettings.Width / 2f - (float)Size.X / 2f, -(float)Position.Y + _displaySettings.Height / 2f - (float)Size.Y / 2f);
                     break;
                 case ElementAnchors.BottomRight:
-                    transposeVector = new Vector2(-(float)Position.X + _displaySettings.Width / 2f, (float)Position.Y - _displaySettings.Height / 2f);
+                    transposeVector = new Vector2(-(float)Position.X + _displaySettings.Width / 2f - (float)Size.X / 2f, (float)Position.Y - _displaySettings.Height / 2f + (float)Size.Y / 2f);
                     break;
                 default:
                     break;
             }
 
+            return transposeVector;
+        }
+
+        public Vector2i GetWorldTopRightPosition()
+        {
+            Vector2i transposeVector = new Vector2i();
+
+            switch (_anchor)
+            {
+                case ElementAnchors.BottomLeft:
+                    transposeVector = Position;
+                    break;
+                case ElementAnchors.TopLeft:
+                    transposeVector = new Vector2i(Position.X, -Position.Y + _displaySettings.Height + Size.Y/2);
+                    break;
+                case ElementAnchors.TopRight:
+                    transposeVector = new Vector2i(-Position.X + _displaySettings.Width, -Position.Y + _displaySettings.Height);
+                    break;
+                case ElementAnchors.BottomRight:
+                    transposeVector = Position;
+                    break;
+                default:
+                    break;
+            }
 
             return transposeVector;
         }
+
+        public bool IsInCoordinates(Vector2i coordinates)
+        {
+            // Ich glaub ich hab oben und unten verwechselt.. *seufz*
+            coordinates.Y = _displaySettings.Height - coordinates.Y;
+            var maxPos = GetWorldTopRightPosition();
+            var diff = maxPos - coordinates;
+
+            if (diff.X >= 0 && diff.X <= Size.X && diff.Y <= Size.Y && diff.Y >= 0)
+            {
+                Console.WriteLine("I was clicked!! for real!! My Text is: " + this.Text);
+                IsClicked = 1;
+                return true;
+            }
+            return false;
+        }
+        public void Render()
+        {
+            _shader.Render(this);
+        }
+
         public enum ElementAnchors
         {
             BottomLeft,
@@ -233,21 +160,50 @@ namespace OpenGlGui
         }
     }
 
-    public class DisplaySettings
+    public class Gui
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public DisplaySettings(int width, int height)
+        public List<GuiObject> _guiObjects { get; protected set; } = new List<GuiObject>();
+        protected GuiObject _clickedObject;
+        int id=0;
+        public Gui() { }
+
+        public void RenderAll()
         {
-            Width = width;
-            Height = height;
+            foreach (var item in _guiObjects)
+            {
+                item.Render();
+            }
         }
 
-        public void Resize(int width, int height)
+        public void AddGuiObject(GuiObject guiObject)
         {
-            Width = width;
-            Height = height;
+            guiObject.SetText("test " + id);
+            id++;
+            _guiObjects.Add(guiObject);
         }
 
+        public bool IsAnyGuiClicked(Vector2i coordinates)
+        {
+            foreach (var item in _guiObjects)
+            {
+                if (item.IsInCoordinates(coordinates))
+                {
+                    _clickedObject = item;
+                    return true;
+                }
+                
+            }
+
+            _clickedObject = null;
+            return false;
+        }
+
+        public void Unclick()
+        {
+            if (_clickedObject != null)
+            {
+                _clickedObject.IsClicked = 0;
+            }
+        }
     }
 }

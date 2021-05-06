@@ -5,6 +5,7 @@ out vec4 FragColor;
 uniform vec2 iResolution;
 uniform vec2 transpose;
 uniform vec2 size;
+uniform float isClicked;
 
 
 uniform sampler2D texture0;
@@ -22,10 +23,10 @@ float sdRoundBox(in vec2 p, in vec2 b, in vec4 r)
 void main()
 {
     //vec2 iResolution = vec2(1600, 900);
-    vec2 p = gl_FragCoord.xy - transpose - iResolution / 2;
-    vec2 q = size;
+    vec2 p = gl_FragCoord.xy - transpose - iResolution / 2.0;
+    vec2 q = size / 2.0;
 
-    float d = sdRoundBox(p, q, vec4(12.5));
+    float d = sdRoundBox(p, q, vec4(5.0));
 
     float isInsideBorder = 1.0 - smoothstep(-3.0, 0.0, d);
 
@@ -33,15 +34,17 @@ void main()
     vec3 inside = vec3(0.0, 0.25, 0.4) * isInsideBorder;
     vec3 col = border + inside;
 
+    col = col - isClicked * col * 0.45;
+
     float visibility = max(0., 1. - step(-0.0, d));
     FragColor = vec4(col, visibility);
 
-    //float textOrObject = smoothstep(-1.75, -1.5, -length(texture(texture0, vec2(p.x, -p.y) / 200.0).xyz));
-
-    vec2 texCoords = vec2(p.x / size.x / 2.0, -p.y / size.y / 2.0) - 0.5;
+    vec2 texCoords = vec2(p.x / size.x, -p.y / size.y) - 0.5;
     vec4 texture = texture(texture0, texCoords);
-    vec3 texCol = texture.xyz * texture.w;
+    vec3 texCol = texture.xyz;
+    texCol = (1.0 - isClicked) * texCol + isClicked * vec3(0.45);
+    texture = vec4(texCol, texture.w);
 
-    vec4 objAndTextCol = vec4(col, visibility) * (1.0 - texture.w) + texture;
+    vec4 objAndTextCol = vec4(col, 1.0) * (1.0 - texture.w) + texture * texture.w;
     FragColor = objAndTextCol;
 }

@@ -16,6 +16,7 @@ namespace OpenGlGui
     {
         Shader _shader;
         GuiObjectShader _guiObjectShader;
+        Gui _gui;
         bool _drawOnRenderFrame = true;
 
         DisplaySettings _displaySettings;
@@ -154,10 +155,16 @@ namespace OpenGlGui
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            _shader = new Shader("./Shader/shader.vert", "./Shader/shader.frag", base.ClientRectangle.Size.X, base.ClientRectangle.Size.Y);
+            _shader = new Shader("./Shader/shader.vert", "./Shader/shader.frag");
             _shader.Use();
 
-            _guiObjectShader = new GuiObjectShader("./Shader/BoxShader.vert", "./Shader/BoxShader.frag", new Vector2i(200, 40), _displaySettings);
+            _guiObjectShader = new GuiObjectShader("./Shader/BoxShader.vert", "./Shader/BoxShader.frag", _displaySettings);
+            _gui = new Gui();
+
+            _gui.AddGuiObject(new GuiObject(new Vector2i(150, 35), new Vector2i(50, 50), _guiObjectShader, _displaySettings, GuiObject.ElementAnchors.TopRight));
+            _gui.AddGuiObject(new GuiObject(new Vector2i(150, 35), new Vector2i(50, 100), _guiObjectShader, _displaySettings, GuiObject.ElementAnchors.TopRight));
+            _gui.AddGuiObject(new GuiObject(new Vector2i(150, 35), new Vector2i(50, 150), _guiObjectShader, _displaySettings, GuiObject.ElementAnchors.TopRight));
+
 
             //int temp;
             base.OnLoad();
@@ -184,9 +191,15 @@ namespace OpenGlGui
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            CursorVisible = false;
-            CursorGrabbed = true;
             var position = new Vector2(MouseState.X, MouseState.Y);
+
+            var isGuiClicked = _gui.IsAnyGuiClicked(new Vector2i(Convert.ToInt32(MouseState.X), Convert.ToInt32(MouseState.Y)));
+
+            if (!isGuiClicked)
+            {
+                CursorVisible = false;
+                CursorGrabbed = true;
+            }
 
             if (e.Button == MouseButton.Button3 || e.Button == MouseButton.Button1)
             {
@@ -196,12 +209,16 @@ namespace OpenGlGui
             {
                 //ViewerAPI.CenterView();
             }
+            
+
             base.OnMouseDown(e);
         }
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             CursorVisible = true;
             CursorGrabbed = false;
+
+            _gui.Unclick();
 
             //_motionTracker.Stop();
 
@@ -227,13 +244,15 @@ namespace OpenGlGui
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
             _shader.Use();
-            Console.WriteLine(GL.GetError().ToString());
+            //Console.WriteLine(GL.GetError().ToString());
 
-            GL.BindVertexArray(_vertexArrayObject);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+            //GL.BindVertexArray(_vertexArrayObject);
+            //GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
 
-            _guiObjectShader.Use();
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+            _gui.RenderAll();
+
+            //_guiObjectShader.Use();
+            //GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
 
             //_guiObjectShader.UseAgain();
             //GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
