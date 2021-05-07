@@ -1,12 +1,13 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using OpenGlGui.GuiElements;
+using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Runtime.InteropServices;
 
 namespace OpenGlGui
 {
-    public class GuiObjectShader : Shader
+    public class GuiElementShader : Shader
     {
-        protected DisplaySettings _displaySettings;
+        protected IDisplaySettings _displaySettings;
 
         protected float[] _vertices = new float[]
         {
@@ -21,7 +22,7 @@ namespace OpenGlGui
         protected int _vertexBuffer;
         protected int _vertexArray;
 
-        public GuiObjectShader(string vertexPath, string fragmentPath, DisplaySettings displaySettings) : base(vertexPath, fragmentPath)
+        public GuiElementShader(string vertexPath, string fragmentPath, IDisplaySettings displaySettings) : base(vertexPath, fragmentPath)
         {
             _displaySettings = displaySettings;
 
@@ -72,17 +73,20 @@ namespace OpenGlGui
         //Console.WriteLine(GL.GetError().ToString());
 
 
-        public void Render(GuiObject guiObject)
+        public void Render(GuiElement guiObject)
         {
             this.Use();
             SetUniforms(guiObject);
 
-            guiObject.Texture.Use(TextureUnit.Texture0);
+            if (guiObject.Texture != null)
+            {
+                guiObject.Texture.Use(TextureUnit.Texture0);
+            }
 
             GL.BindVertexArray(_vertexArray);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
         }
-        protected void SetUniforms(GuiObject guiObject)
+        protected virtual void SetUniforms(GuiElement guiObject)
         {
             int location = GL.GetUniformLocation(handle, "iResolution");
             GL.Uniform2(location, guiObject.GetiResolution());

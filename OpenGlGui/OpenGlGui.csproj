@@ -17,6 +17,12 @@
     <None Update="Shader\BoxShader.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Shader\ElementGroupShader.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Shader\LabelShader.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Shader\shader.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
