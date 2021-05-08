@@ -1,4 +1,5 @@
-﻿using OpenGlGui.GuiElements;
+﻿using OpenGlGuiLibrary;
+using OpenGlGuiLibrary.GuiElements;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -155,25 +156,25 @@ namespace OpenGlGui
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            _shader = new Shader("./Shader/shader.vert", "./Shader/shader.frag");
+            _shader = new Shader(".\\Shader\\shader.vert", ".\\Shader\\shader.frag");
             _shader.Use();
 
             _gui = new Gui(_displaySettings, this);
 
-            var elementGroup = new ElementGroup(new Vector2i(500,700), new Vector2i(100,100), _gui.ElementGroupShader, _displaySettings, GuiElement.ElementAnchors.TopRight);
+            var elementGroup = new ElementGroup(new Vector2i(500,700), new Vector2i(100,100), _gui.ElementGroupShader, _displaySettings, ElementAnchors.TopRight);
 
             _gui.AddGuiElement(elementGroup);
 
-            var button = new Button(new Vector2i(250, 35), new Vector2i(50, 100), _gui.GuiElementShader, _displaySettings, GuiElement.ElementAnchors.TopRight, elementGroup);
+            var button = new Button(new Vector2i(250, 35), new Vector2i(50, 100), _gui.GuiElementShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
             button.SetText("Hello World!");
 
-            button = new Button(new Vector2i(250, 35), new Vector2i(50, 150), _gui.GuiElementShader, _displaySettings, GuiElement.ElementAnchors.TopRight, elementGroup);
+            button = new Button(new Vector2i(250, 35), new Vector2i(50, 150), _gui.GuiElementShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
             button.SetText("Bunny!");
 
-            button = new Button(new Vector2i(250, 35), new Vector2i(50, 200), _gui.GuiElementShader, _displaySettings, GuiElement.ElementAnchors.TopRight, elementGroup);
+            button = new Button(new Vector2i(250, 35), new Vector2i(50, 200), _gui.GuiElementShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
             button.SetText("AliVollNixSchuld");
 
-            var label = new Label(new Vector2i(250, 30), new Vector2i(50, 50), _gui.LabelShader, _displaySettings, GuiElement.ElementAnchors.TopRight, elementGroup);
+            var label = new Label(new Vector2i(250, 30), new Vector2i(50, 50), _gui.LabelShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
             label.SetText("Layer: 5 von 100");
 
             //int temp;

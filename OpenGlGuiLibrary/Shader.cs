@@ -3,9 +3,10 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
-namespace OpenGlGui
+namespace OpenGlGuiLibrary
 {
     public class Shader
     {
@@ -23,6 +24,8 @@ namespace OpenGlGui
         private void CompileShader()
         {
             string VertexShaderSource;
+            var assembly = Assembly.GetExecutingAssembly();
+            var test = assembly.GetManifestResourceNames();
 
             using (StreamReader reader = new StreamReader(_vertexPath, Encoding.UTF8))
             {
@@ -35,7 +38,6 @@ namespace OpenGlGui
             {
                 FragmentShaderSource = reader.ReadToEnd();
             }
-
 
             var VertexShader = GL.CreateShader(ShaderType.VertexShader);
             GL.ShaderSource(VertexShader, VertexShaderSource);

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace OpenGlGui.GuiElements
+namespace OpenGlGuiLibrary.GuiElements
 {
     public class ElementGroup : GuiElement, IMoveable
     {
@@ -11,7 +11,7 @@ namespace OpenGlGui.GuiElements
         {
             if (IsClicked > 0)
             {
-                _relativeAnchorPosition += delta;
+                Placement.SetPosition(Placement._relativeAnchorPosition + delta);
             }
         }
     }

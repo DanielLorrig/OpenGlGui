@@ -1,4 +1,4 @@
-﻿namespace OpenGlGui
+﻿namespace OpenGlGuiLibrary
 {
     public interface IDisplaySettings
     {

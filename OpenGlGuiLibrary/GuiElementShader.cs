@@ -1,9 +1,9 @@
-﻿using OpenGlGui.GuiElements;
+﻿using OpenGlGuiLibrary.GuiElements;
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Runtime.InteropServices;
 
-namespace OpenGlGui
+namespace OpenGlGuiLibrary
 {
     public class GuiElementShader : Shader
     {
@@ -30,9 +30,6 @@ namespace OpenGlGui
             CreateVertexBuffer();
             CreateVertexArray();
 
-            //var bitmap = CreateBitmapImage("12.34");
-            //bitmap.Save("test.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
-            //_texture = Texture.LoadFromImage(bitmap);
             Use();
         }
 
@@ -89,14 +86,14 @@ namespace OpenGlGui
         protected virtual void SetUniforms(GuiElement guiObject)
         {
             int location = GL.GetUniformLocation(handle, "iResolution");
-            GL.Uniform2(location, guiObject.GetiResolution());
+            GL.Uniform2(location, guiObject.Placement.GetiResolution());
 
             //var objectPosition = guiObject.Position;
             var transpose = GL.GetUniformLocation(handle, "transpose");
-            GL.Uniform2(transpose, guiObject.GetTransposeVector());
+            GL.Uniform2(transpose, guiObject.Placement.GetTransposeVector());
 
             var sizeLocation = GL.GetUniformLocation(handle, "size");
-            GL.Uniform2(sizeLocation, guiObject.GetSize());
+            GL.Uniform2(sizeLocation, guiObject.Placement.GetSize());
 
             var isClicked = GL.GetUniformLocation(handle, "isClicked");
             GL.Uniform1(isClicked, guiObject.IsClicked);

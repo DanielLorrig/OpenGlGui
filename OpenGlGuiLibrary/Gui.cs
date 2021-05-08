@@ -1,10 +1,11 @@
-﻿using OpenGlGui.GuiElements;
-using OpenGlGui.Input;
+﻿using OpenGlGuiLibrary.GuiElements;
+using OpenGlGuiLibrary.Input;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using System.Collections.Generic;
+using System.Reflection;
 
-namespace OpenGlGui
+namespace OpenGlGuiLibrary
 {
     public class Gui
     {
@@ -23,13 +24,16 @@ namespace OpenGlGui
         int id=0;
         public Gui(IDisplaySettings displaySettings, NativeWindow nativeWindow) 
         {
+            string boxVertexShader = ".\\Shader\\BoxShader.vert";
+            string boxFragShader = ".\\Shader\\BoxShader.frag";
+
             MouseEventManager = new MouseEventManager(nativeWindow, this);
             _nativeWindow = nativeWindow;
             _displaySettings = displaySettings;
-            GuiElementShader = new GuiElementShader("./Shader/BoxShader.vert", "./Shader/BoxShader.frag", _displaySettings);
-            BoxShader = new GuiElementShader("./Shader/BoxShader.vert", "./Shader/BoxShader.frag", _displaySettings);
-            ElementGroupShader = new GuiElementShader("./Shader/BoxShader.vert", "./Shader/ElementGroupShader.frag", _displaySettings);
-            LabelShader = new GuiElementShader("./Shader/BoxShader.vert", "./Shader/LabelShader.frag", _displaySettings);
+            GuiElementShader = new GuiElementShader(boxVertexShader, boxFragShader, _displaySettings);
+            BoxShader = new GuiElementShader(boxVertexShader, boxFragShader, _displaySettings);
+            ElementGroupShader = new GuiElementShader(boxVertexShader, ".\\Shader\\ElementGroupShader.frag", _displaySettings);
+            LabelShader = new GuiElementShader(boxVertexShader, ".\\Shader\\LabelShader.frag", _displaySettings);
         }
 
         public void RenderAll()

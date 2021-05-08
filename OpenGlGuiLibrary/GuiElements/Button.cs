@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using System;
 
-namespace OpenGlGui.GuiElements
+namespace OpenGlGuiLibrary.GuiElements
 {
     public class Button : GuiElement
     {
