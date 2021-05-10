@@ -8,12 +8,6 @@ namespace OpenGlGuiLibrary.GuiElements
 {
     public abstract class GuiElement
     {
-        //protected DisplaySettings _displaySettings;
-        //protected ElementAnchors _anchor;
-        //protected Vector2i _centerToAnchorMultiplier;
-        //protected Vector2i _anchorToCenterMultiplier;
-        //public Vector2 Size { get; protected set; }
-        //protected Vector2 _relativeAnchorPosition { get; set; } // relativ to parent corner.
         public Placement Placement { get; private set; }
         public Texture Texture { get; private set; }
         protected readonly GuiElementShader _shader;
@@ -28,13 +22,6 @@ namespace OpenGlGuiLibrary.GuiElements
             _shader = shader;
 
             Placement = new Placement(size, position, this, displaySettings, elementAnchor);
-
-            //_relativeAnchorPosition = position;
-            //Size = size;
-            //_displaySettings = displaySettings;
-            //_anchor = elementAnchor;
-
-            //SetDirections();
         }
         private void SetParent(GuiElement parent)
         {
@@ -65,34 +52,6 @@ namespace OpenGlGuiLibrary.GuiElements
             }
             else return true;
         }
-
-        
-
-        //protected void SetDirections()
-        //{
-        //    _centerToAnchorMultiplier = GetCenterToElementAnchorMultiplier(_anchor);
-        //    _anchorToCenterMultiplier = _centerToAnchorMultiplier * -1;
-        //}
-        //protected Vector2i GetCenterToElementAnchorMultiplier(ElementAnchors elementAnchor)
-        //{
-        //    var result = Vector2i.Zero;
-        //    switch (elementAnchor)
-        //    {
-        //        case ElementAnchors.BottomLeft:
-        //            result = new Vector2i(-1, -1);
-        //            break;
-        //        case ElementAnchors.TopLeft:
-        //            result = new Vector2i(-1, 1);
-        //            break;
-        //        case ElementAnchors.TopRight:
-        //            result = new Vector2i(1, 1);
-        //            break;
-        //        case ElementAnchors.BottomRight:
-        //            result = new Vector2i(1, -1);
-        //            break;
-        //    }
-        //    return result;
-        //}
 
         public void SetText(string text)
         {
@@ -138,51 +97,11 @@ namespace OpenGlGuiLibrary.GuiElements
 
         public List<GuiElement> Children { get; private set; } = new List<GuiElement>();
 
-        //public Vector2 GetiResolution()
-        //{
-        //    return new Vector2(_displaySettings.Width, _displaySettings.Height);
-        //}
-        //public Vector2 GetSize()
-        //{
-        //    return new Vector2(Size.X, Size.Y);
-        //}
-        //public Vector2 GetTransposeVector()
-        //{
-        //    Vector2 transposeVector = GetElementCenterAbsolute();
-
-        //    return transposeVector;
-        //}
-
-        //protected Vector2 GetAbsoluteAnchorPosition() // Pixelspace
-        //{
-        //    Vector2i directionMultiplier = Vector2i.Zero;
-        //    if (_parent != null)
-        //    {
-        //        var pos = _parent.GetElementCornerAbsolute(_anchor) + _relativeAnchorPosition * _anchorToCenterMultiplier;
-        //        return pos;
-        //    }
-        //    else
-        //    {
-        //        var pos = _relativeAnchorPosition * _anchorToCenterMultiplier + new Vector2(_displaySettings.Width / 2f, _displaySettings.Height / 2f) * _centerToAnchorMultiplier;
-        //        return pos;
-        //    }
-        //}
-
-        //public Vector2 GetWorldTopRightPosition()
-        //{
-        //    var center = GetElementCenterAbsolute();
-        //    Vector2 transposeVector =  center + Size * 0.5f;
-
-        //    return transposeVector;
-        //}
-
         public void Render()
         {
             _shader.Render(this);
             Children.ForEach(x => x.Render());
         }
-
-        
 
         public GuiElement IsInCoordinates(Vector2 coordinates)
         {

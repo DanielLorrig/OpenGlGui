@@ -16,7 +16,7 @@ namespace OpenGlGui
 {
     public class Display : GameWindow
     {
-        Shader _shader;
+        //Shader _shader;
         Gui _gui;
         bool _drawOnRenderFrame = true;
 
@@ -53,7 +53,7 @@ namespace OpenGlGui
             }
             else if (input.IsKeyDown(Keys.Space))
             {
-                _shader.Recompile();
+                //_shader.Recompile();
                 _gui.RecompileShader();
             }
             else if ((input.IsKeyDown(Keys.LeftAlt) || input.IsKeyDown(Keys.RightAlt)) && input.IsKeyDown(Keys.Up))
@@ -156,8 +156,8 @@ namespace OpenGlGui
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            _shader = new Shader(".\\Shader\\shader.vert", ".\\Shader\\shader.frag");
-            _shader.Use();
+            //_shader = new Shader(".\\Shader\\shader.vert", ".\\Shader\\shader.frag");
+            //_shader.Use();
 
             _gui = new Gui(_displaySettings, this);
 
@@ -176,6 +176,8 @@ namespace OpenGlGui
 
             var label = new Label(new Vector2i(250, 30), new Vector2i(50, 50), _gui.LabelShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
             label.SetText("Layer: 5 von 100");
+
+            var textbox = new Textbox(new Vector2i(250, 30), new Vector2i(50, 250), _gui.TextboxShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
 
             //int temp;
             base.OnLoad();
@@ -225,7 +227,7 @@ namespace OpenGlGui
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            _shader.Use();
+            //_shader.Use();
             //Console.WriteLine(GL.GetError().ToString());
 
             //GL.BindVertexArray(_vertexArrayObject);

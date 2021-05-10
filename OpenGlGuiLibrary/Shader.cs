@@ -13,6 +13,8 @@ namespace OpenGlGuiLibrary
         public int handle;
         string _vertexPath;
         string _fragmentPath;
+        string _vertexShaderCode;
+        string _fragmentShaderCode;
 
         public Shader(string vertexPath, string fragmentPath)
         {
@@ -23,27 +25,24 @@ namespace OpenGlGuiLibrary
         }
         private void CompileShader()
         {
-            string VertexShaderSource;
-            var assembly = Assembly.GetExecutingAssembly();
-            var test = assembly.GetManifestResourceNames();
+            bool isDebug = true;
 
-            using (StreamReader reader = new StreamReader(_vertexPath, Encoding.UTF8))
+            if (isDebug)
             {
-                VertexShaderSource = reader.ReadToEnd();
+                ReadShaderDebug();
+            }
+            else
+            {
+                ReadShaderDeploy();
             }
 
-            string FragmentShaderSource;
 
-            using (StreamReader reader = new StreamReader(_fragmentPath, Encoding.UTF8))
-            {
-                FragmentShaderSource = reader.ReadToEnd();
-            }
 
             var VertexShader = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(VertexShader, VertexShaderSource);
+            GL.ShaderSource(VertexShader, _vertexShaderCode);
 
             var FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(FragmentShader, FragmentShaderSource);
+            GL.ShaderSource(FragmentShader, _fragmentShaderCode);
 
             GL.CompileShader(VertexShader);
 
@@ -71,6 +70,25 @@ namespace OpenGlGuiLibrary
             GL.DeleteShader(VertexShader);
         }
 
+        private void ReadShaderDebug()
+        {
+            using (StreamReader reader = new StreamReader(_vertexPath, Encoding.UTF8))
+            {
+                _vertexShaderCode = reader.ReadToEnd();
+            }
+
+
+            using (StreamReader reader = new StreamReader(_fragmentPath, Encoding.UTF8))
+            {
+                _fragmentShaderCode = reader.ReadToEnd();
+            }
+        }
+
+        private void ReadShaderDeploy()
+        {
+            _vertexShaderCode = _vertexPath;
+            _fragmentShaderCode = _fragmentPath;
+        }
         public virtual void Use(double? iTime = null, int index = 0)
         {
             GL.UseProgram(handle);

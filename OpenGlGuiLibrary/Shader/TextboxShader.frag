@@ -23,13 +23,14 @@ void main()
 {
     vec2 p = gl_FragCoord.xy - transpose - iResolution / 2.0;
     vec2 q = size / 2.0;
+    float borderSize = 5.0;
 
     float d = sdRoundBox(p, q, vec4(5.0));
 
-    float isInsideBorder = 1.0 - smoothstep(-3.0, 0.0, d);
+    float isInsideBorder = 1.0 - smoothstep(-5.0, 0.0, d);
 
     vec3 border = vec3(0.0, 0.25, 0.25);
-    vec3 inside = vec3(0.0, 0.25, 0.4) * isInsideBorder;
+    vec3 inside = vec3(1.0, 0.75, 0.75) * isInsideBorder;
     vec3 col = border + inside;
 
     col = col - isClicked * col * 0.45;
