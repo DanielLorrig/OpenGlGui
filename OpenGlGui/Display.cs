@@ -149,7 +149,7 @@ namespace OpenGlGui
 
             GL.CreateVertexArrays(1, out _vertexArrayObject);
             GL.BindVertexArray(_vertexArrayObject);
-            
+
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
 
@@ -161,23 +161,26 @@ namespace OpenGlGui
 
             _gui = new Gui(_displaySettings, this);
 
-            var elementGroup = new ElementGroup(new Vector2i(500,700), new Vector2i(100,100), _gui.ElementGroupShader, _displaySettings, ElementAnchors.TopRight);
+            var elementGroup = new ElementGroup(new Vector2i(500, 700), new Vector2i(100, 100), _gui.ElementGroupShader, _displaySettings, ElementAnchors.TopRight);
 
             _gui.AddGuiElement(elementGroup);
 
             var button = new Button(new Vector2i(250, 35), new Vector2i(50, 100), _gui.GuiElementShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
-            button.SetText("Hello World!");
+            button.SetText("Button1");
 
             button = new Button(new Vector2i(250, 35), new Vector2i(50, 150), _gui.GuiElementShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
-            button.SetText("Bunny!");
+            button.SetText("Button2");
 
             button = new Button(new Vector2i(250, 35), new Vector2i(50, 200), _gui.GuiElementShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
-            button.SetText("AliVollNixSchuld");
+            button.SetText("Button3");
 
             var label = new Label(new Vector2i(250, 30), new Vector2i(50, 50), _gui.LabelShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
             label.SetText("Layer: 5 von 100");
 
             var textbox = new Textbox(new Vector2i(250, 30), new Vector2i(50, 250), _gui.TextboxShader, _displaySettings, ElementAnchors.TopRight, elementGroup);
+
+            var trackBar = new TrackBar(new Vector2i(25, 800), new Vector2i(50, 50), _gui.ElementGroupShader, _displaySettings, ElementAnchors.TopRight);
+            _gui.AddGuiElement(trackBar);
 
             //int temp;
             base.OnLoad();
@@ -242,7 +245,7 @@ namespace OpenGlGui
             //GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
 
             SwapBuffers();
-            
+
 
             base.OnRenderFrame(e);
         }

@@ -10,6 +10,9 @@ namespace OpenGlGuiLibrary.GuiElements
     {
         public Placement Placement { get; private set; }
         public Texture Texture { get; private set; }
+
+        public Style Style { get; protected set; } = new Style();
+
         protected readonly GuiElementShader _shader;
         public int Id { get; protected set; }
         public string Text { get; protected set; }
@@ -127,20 +130,20 @@ namespace OpenGlGuiLibrary.GuiElements
             return null;
         }
 
-
-        //public enum ElementAnchors
-        //{
-        //    BottomLeft,
-        //    TopLeft,
-        //    TopRight,
-        //    BottomRight
-        //}
     }
+
     public enum ElementAnchors
     {
         BottomLeft,
         TopLeft,
         TopRight,
         BottomRight
+    }
+
+    public class Style
+    {
+        public Vector3 Color { get; set; }
+        public Vector3 BackgroundColor { get; set; }
+        public Vector3 BorderColor { get; set; }
     }
 }

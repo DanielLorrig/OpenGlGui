@@ -26,7 +26,6 @@ namespace OpenGlGuiLibrary
         {
             _displaySettings = displaySettings;
 
-            //CreateVertices();
             CreateVertexBuffer();
             CreateVertexArray();
 
@@ -85,6 +84,9 @@ namespace OpenGlGuiLibrary
         }
         protected virtual void SetUniforms(GuiElement guiObject)
         {
+            int color = GL.GetUniformLocation(handle, "color");
+            GL.Uniform3(color, guiObject.Style.Color);
+
             int location = GL.GetUniformLocation(handle, "iResolution");
             GL.Uniform2(location, guiObject.Placement.GetiResolution());
 
