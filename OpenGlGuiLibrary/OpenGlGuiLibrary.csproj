@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -10,22 +10,49 @@
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
+	<PropertyGroup>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<RepositoryUrl>https://github.com/DanielLorrig/OpenGlGui.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\LICENSE" Pack="true" PackagePath=""/>
+		<None Include="..\README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+
+	<ItemGroup>
     <None Update="Shader\BoxShader.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <pack>true</pack>
+		<PackagePath>Shader</PackagePath>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Shader\BoxShader.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<pack>true</pack>
+		<PackagePath>Shader</PackagePath>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Shader\ElementGroupShader.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<pack>true</pack>
+		<PackagePath>Shader</PackagePath>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Shader\LabelShader.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<pack>true</pack>
+		<PackagePath>Shader</PackagePath>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Shader\TextboxShader.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<pack>true</pack>
+		<PackagePath>Shader</PackagePath>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+	
 
 </Project>

@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OpenGlGuiLibrary\OpenGlGuiLibrary.csproj" />
-    <ProjectReference Include="..\OpenGlGuiLib\OpenGlGuiLib.csproj" />
   </ItemGroup>
 
 </Project>
